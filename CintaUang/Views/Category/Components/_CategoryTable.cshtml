@@ -1,0 +1,33 @@
+﻿@model CintaUang.ViewModels.CategoryViewModels.Components.CategoriesTableViewModel
+@{
+    Layout = "_LayoutViewComponent";
+}
+<datatable id="categories-datatable">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nama</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</datatable>
+
+<script type="text/javascript">
+    var table =
+        $("#categories-datatable").DataTable({
+            "processing": true,
+            "serverSide": true,
+            "stateSave": false,
+            "autoWidth": true,
+            "pagingType": "first_last_numbers",
+            "ajax": {
+                "url": "/Category/DTT",
+                "type": "GET",
+                "datatype": "json"
+            },
+            "columns": [
+                { "data": "id", "orderable": false, "className": "CategoryId" },
+                { "data": "name", "orderable": false, "className": "CategoryName" },
+            ]
+        });
+</script>

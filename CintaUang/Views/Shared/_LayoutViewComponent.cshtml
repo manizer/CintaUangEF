@@ -1,0 +1,6 @@
+﻿@RenderBody()
+
+@if (TempData["viewNotifications"] != null)
+{
+    @await Html.PartialAsync("_ViewNotification", JsonConvert.DeserializeObject<List<ViewNotification>>(TempData["viewNotifications"].ToString()));
+}

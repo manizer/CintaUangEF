@@ -1,0 +1,45 @@
+﻿@model CintaUang.ViewModels.AuthViewModels.RegisterViewModel
+@{
+    Layout = null;
+}
+<html>
+<head>
+    <link rel="stylesheet" href="~/css/login.min.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                <div class="card card-signin my-5">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Sign In</h5>
+                        <form asp-controller="Auth" asp-action="Register" method="post" class="form-signin">
+                            <div class="form-label-group">
+                                <input asp-for="UserName" class="form-control" placeholder="Full Name" type="text" />
+                                <label asp-for="UserName">Full Name</label>
+                                <span asp-validation-for="UserName" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-label-group">
+                                <input asp-for="UserEmail" class="form-control" placeholder="Email Address" type="text" />
+                                <label asp-for="UserEmail">Email Address</label>
+                                <span asp-validation-for="UserEmail" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-label-group">
+                                <input asp-for="UserPassword" class="form-control" placeholder="Password" type="password" />
+                                <label asp-for="UserPassword">Password</label>
+                                <span asp-validation-for="UserPassword" class="text-danger"></span>
+                            </div>
+
+                            <button class="btn btn-lg btn-danger text-uppercase btn-block" type="submit">Register</button>
+                            <hr class="my-4">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="~/js/login.min.js"></script>
+</body>
+</html>

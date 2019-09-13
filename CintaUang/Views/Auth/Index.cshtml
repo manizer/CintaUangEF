@@ -1,0 +1,53 @@
+﻿@model CintaUang.ViewModels.AuthViewModels.IndexViewModel
+@{ 
+    Layout = null;
+}
+<html>
+<head>
+    <link rel="stylesheet" href="~/css/login.min.css" />
+    <link rel="stylesheet" href="~/css/vendor.min.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                <div class="card card-signin my-5">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Sign In</h5>
+                        <form asp-controller="Auth" asp-action="Login" method="post" class="form-signin">
+                            <div class="form-label-group">
+                                <input asp-for="UserEmail" class="form-control" placeholder="Email Address" type="text"/>
+                                <label asp-for="UserEmail">Email Address</label>
+                                <span asp-validation-for="UserEmail" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-label-group">
+                                <input asp-for="UserPassword" class="form-control" placeholder="Password" type="password" />
+                                <label asp-for="UserPassword">Password</label>
+                                <span asp-validation-for="UserPassword" class="text-danger"></span>
+                            </div>
+
+                            <div class="row form-label-group">
+                                <div class="col-lg-6">
+                                    <button class="btn btn-lg btn-primary text-uppercase btn-block" type="submit">Sign in</button>
+                                </div>
+                                <div class="col-lg-6">
+                                    <a asp-controller="Auth" asp-action="Register" class="btn btn-lg btn-danger text-uppercase btn-block link-button">Register</a>
+                                </div>
+                            </div>
+                            <hr class="my-4">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="~/js/login.min.js"></script>
+    <script type="text/javascript" src="~/js/vendor.min.js"></script>
+    <script type="text/javascript" src="~/js/site.min.js"></script>
+    @if (TempData["viewNotifications"] != null)
+    {
+        @await Html.PartialAsync("_ViewNotification", JsonConvert.DeserializeObject<List<ViewNotification>>(TempData["viewNotifications"].ToString()));
+    }
+</body>
+</html>

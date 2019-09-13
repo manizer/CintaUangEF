@@ -1,0 +1,31 @@
+﻿@model CintaUang.ViewModels.ExpenseViewModels.Components.InsertUpdateExpenseViewModel
+@{
+    Layout = "_LayoutViewComponent";
+}
+<form asp-action="InsertUpdateExpenseOnSubmit" asp-controller="Expense" data-ajax="true" data-ajax-method="POST" data-ajax-mode="replace" data-ajax-update="#subcategoriestable">
+    <div class="form-group">
+        <lovelydropdown data="Model.CategoryDropdown" id="ddl-category" class="form-control" asp-for="CategoryId"></lovelydropdown>
+    </div>
+    <div class="form-group">
+        <h2>Lovely subcategory ddl</h2>
+        <lovelydropdown id="ddl-subcategory" class="form-control" asp-for="SubCategoryId"></lovelydropdown>
+    </div>
+    <div class="form-group">
+        <label asp-for="ExpenseName">Expense Name</label>
+        <input asp-for="ExpenseName" class="form-control" placeholder="Expense Name" type="text" />
+        <span asp-validation-for="ExpenseName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Amount">Expense Amount</label>
+        <input asp-for="Amount" class="form-control" placeholder="Expense Amount" type="number" />
+        <span asp-validation-for="Amount" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <button class="btn btn-info form-control" type="submit">Search</button>
+    </div>
+</form>
+
+@* AUTO LINKER *@
+<div id="autolink-wrapper">
+    <lovelyautolink provider="ddl-category" provide-for="ddl-subcategory" id="autolink" sub-dropdown-key="DROPDOWN_SUBCATEGORIES"></lovelyautolink>
+</div>

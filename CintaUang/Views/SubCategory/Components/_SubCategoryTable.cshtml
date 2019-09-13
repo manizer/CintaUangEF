@@ -1,0 +1,29 @@
+﻿@model CintaUang.ViewModels.SubCategoryViewModels.Components.SubCategoriesTableViewModel
+@{ 
+    Layout = "_LayoutViewComponent";
+}
+<form asp-action="SubCategoryTableViewComponentOnSearch" asp-controller="SubCategory" data-ajax="true" data-ajax-method="POST" data-ajax-mode="replace" data-ajax-update="#subcategoriestable">
+    <div class="form-group">
+        <select asp-for="CategoryId" asp-items="Model.CategorySelectListItems" class="form-control"></select>
+    </div>
+    <div class="form-group">
+        <button class="btn btn-info form-control" type="submit">Search</button>
+    </div>
+</form>
+<datatable id="subcategories-datatable">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var subCategory in Model.SubCategories)
+        {
+            <tr>
+                <td>@subCategory.Id</td>
+                <td>@subCategory.Name</td>
+            </tr>
+        }
+    </tbody>
+</datatable>

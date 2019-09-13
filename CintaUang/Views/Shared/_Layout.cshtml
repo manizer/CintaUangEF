@@ -1,0 +1,28 @@
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Cinta Uang</title>
+    <link rel="stylesheet" href="~/css/vendor.min.css" />
+
+    <script type="text/javascript" src="~/js/vendor.min.js"></script>
+    <script type="text/javascript" src="~/js/site.min.js"></script>
+    <script type="text/javascript" src="~/js/vendor-validate.min.js"></script>
+    @* GLOBAL JS VARIABLES *@
+    <script type="text/javascript">
+        const BASE_URL = '@Context.Request.Scheme://@Context.Request.Host'
+    </script>
+</head>
+<body>
+    <div class="container-fluid">
+        @RenderBody()
+    </div>
+
+  
+    @RenderSection("Scripts", false)
+
+    @if (TempData["viewNotifications"] != null)
+    {
+        @await Html.PartialAsync("_ViewNotification", JsonConvert.DeserializeObject<List<ViewNotification>>(TempData["viewNotifications"].ToString()));
+    }
+</body>
+</html>

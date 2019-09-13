@@ -1,0 +1,14 @@
+﻿@model CintaUang.ViewModels.CategoryViewModels.IndexViewModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Index";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h2>Expense Data</h2>
+            @await Component.InvokeAsync("InsertUpdateExpense")
+        </div>
+    </div>
+</div>
