@@ -6,11 +6,12 @@ using CintaUang.Core.ApplicationSession;
 using CintaUang.ViewModels.CategoryViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Model.Domain;
-using Model.Domain.DataTable;
 using Model.Domain.DB;
 using Model.Domain.DB.DataTable;
 using Model.DTO.DB.DataTable.Common;
 using Service.Modules;
+
+using static Model.Domains.CategoryDomains.CategoryDomain;
 
 namespace CintaUang.Controllers.CategoryControllers
 {
@@ -23,12 +24,12 @@ namespace CintaUang.Controllers.CategoryControllers
 			this.categoryService = categoryService;
 		}
 
-		public async Task<IActionResult> Index()
+		public IActionResult Index()
 		{
 			return View(new IndexViewModel());
 		}
 
-		public async Task<IActionResult> Save(IndexViewModel indexViewModel)
+		public IActionResult Save(IndexViewModel indexViewModel)
 		{
 			if (!ModelState.IsValid)
 			{
@@ -40,7 +41,7 @@ namespace CintaUang.Controllers.CategoryControllers
 				if (indexViewModel.CategoryId == 0)
 				{
 					// Insert
-					ExecuteResult insertResult = await categoryService.Insert(new Model.Domain.DB.CategoryDB.InsertCategory
+					ExecuteResult insertResult = categoryService.Insert(new InsertCategory
 					{
 						Name = indexViewModel.CategoryName,
 						AuditedUserId = HttpContext.Session.GetLoginUserId() ?? 0
@@ -50,7 +51,7 @@ namespace CintaUang.Controllers.CategoryControllers
 				else
 				{
 					// Update
-					ExecuteResult updateResult = await categoryService.Update(new Model.Domain.DB.CategoryDB.UpdateCategory
+					ExecuteResult updateResult = categoryService.Update(new UpdateCategory
 					{
 						Id = indexViewModel.CategoryId,
 						Name = indexViewModel.CategoryName,
@@ -62,7 +63,7 @@ namespace CintaUang.Controllers.CategoryControllers
 			catch(Exception e)
 			{
 				AddNotification(ViewNotification.Make("Error", ViewNotification.ERROR));
-				return View("Index", indexViewModel);
+				return View("Index", indexViewModel);	
 			}
 
 			return RedirectToAction("Index", "Category");

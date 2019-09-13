@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CintaUang.Core.ApplicationSession;
-using CintaUang.ViewComponents.SubCategoryViewComponents;
 using CintaUang.ViewModels.SubCategoryViewModels;
 using CintaUang.ViewModels.SubCategoryViewModels.Components;
 using Microsoft.AspNetCore.Mvc;
 using Model.Domain;
 using Model.Domain.DB;
-using Model.Domain.DB.CategoryDB;
-using Model.Domain.DB.SubCategoryDB;
 using Model.Lib.DropdownLibs;
 using Service.Modules;
+using static Model.Domains.SubCategoryDomains.SubCategoryDomain;
 
 namespace CintaUang.Controllers
 {
@@ -24,16 +22,16 @@ namespace CintaUang.Controllers
 			this.subCategoryService = subCategoryService;
 		}
 
-		public async Task<IActionResult> Index()
+		public IActionResult Index()
 		{
-			List<Category> categories = (await subCategoryService.GetCategories()).ToList();
+			List<Category> categories = subCategoryService.GetCategories().ToList();
 			return View(new IndexViewModel()
 			{
 				CategorySelectListItems = Dropdown.From(categories)
 			});
 		}
 
-		public async Task<IActionResult> Save(IndexViewModel indexViewModel)
+		public IActionResult Save(IndexViewModel indexViewModel)
 		{
 			if (!ModelState.IsValid)
 			{
@@ -45,7 +43,7 @@ namespace CintaUang.Controllers
 				if (indexViewModel.SubCategoryId == 0)
 				{
 					// Insert
-					ExecuteResult insertResult = await subCategoryService.InsertSubCategory(new Model.Domain.DB.SubCategoryDB.InsertSubCategory
+					ExecuteResult insertResult = subCategoryService.InsertSubCategory(new InsertSubCategory
 					{
 						CategoryId = indexViewModel.CategoryId,
 						SubCategoryName = indexViewModel.SubCategoryName,
@@ -56,7 +54,7 @@ namespace CintaUang.Controllers
 				else
 				{
 					// Update
-					ExecuteResult updateResult = await subCategoryService.UpdateSubCategory(new Model.Domain.DB.SubCategoryDB.UpdateSubCategory
+					ExecuteResult updateResult = subCategoryService.UpdateSubCategory(new UpdateSubCategory
 					{
 						SubCategoryId = indexViewModel.SubCategoryId,
 						CategoryId = indexViewModel.CategoryId,
@@ -77,7 +75,7 @@ namespace CintaUang.Controllers
 
 		#region View Component
 		[HttpPost]
-		public async Task<IActionResult> SubCategoryTableViewComponentOnSearch(SubCategoriesTableViewModel subCategoriesTableViewModel)
+		public IActionResult SubCategoryTableViewComponentOnSearch(SubCategoriesTableViewModel subCategoriesTableViewModel)
 		{
 			AddNotification(ViewNotification.Make("Success Search", ViewNotification.SUCCESS));
 			return ViewComponent("SubCategoryTable", subCategoriesTableViewModel.CategoryId);

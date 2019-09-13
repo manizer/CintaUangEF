@@ -1,8 +1,7 @@
-﻿using Model.Domain.DB;
-using Model.Domain.DB.CategoryDB;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Model.Domains.CategoryDomains.CategoryDomain;
 
 namespace CintaUang.ViewModels.CategoryViewModels.Components
 {

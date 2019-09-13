@@ -1,6 +1,4 @@
 ﻿using Model.Domain.DB;
-using Model.Domain.DB.CategoryDB;
-using Model.Domain.DB.SubCategoryDB;
 using Model.DTO.DB;
 using Model.DTO.DB.SubCategoryDB;
 using Repository.Base;
@@ -18,9 +16,9 @@ namespace Repository.Repositories.SubCategoryRepositories
 {
 	public interface ISubCategoryRepository : IRepository<SubCategoryDTO>
 	{
-		Task<IEnumerable<SubCategory>> GetSubCategoriesByCategoryID(int CategoryID);
-		Task<ExecuteResult> InsertSubCategory(InsertSubCategoryDTO insertSubCategoryDTO);
-		Task<ExecuteResult> UpdateSubCategory(UpdateSubCategoryDTO updateSubCategoryDTO);
+		IEnumerable<SubCategoryDTO> GetSubCategoriesByCategoryID(int CategoryID);
+		ExecuteResultDTO InsertSubCategory(InsertSubCategoryDTO insertSubCategoryDTO);
+		ExecuteResultDTO UpdateSubCategory(UpdateSubCategoryDTO updateSubCategoryDTO);
 	}
 
 	public class SubCategoryRepository : BaseRepository<SubCategoryDTO>, ISubCategoryRepository
@@ -29,56 +27,45 @@ namespace Repository.Repositories.SubCategoryRepositories
 		{
 		}
 
-		public async Task<IEnumerable<SubCategory>> GetSubCategoriesByCategoryID(int CategoryID)
+		public IEnumerable<SubCategoryDTO> GetSubCategoriesByCategoryID(int CategoryID) => Context.SubCategories.Where(x => x.CategoryId == CategoryID);
+
+		public ExecuteResultDTO InsertSubCategory(InsertSubCategoryDTO insertSubCategoryDTO)
 		{
-			var sp = DbUtil.StoredProcedureBuilder
-				.WithSPName("mssubcategory_getbycategoryid")
-				.AddParam(CategoryID)
-				.SP();
-			var subcategorieDtos = await ExecSPToListAsync(sp);
-			return subcategorieDtos.Select(x => new SubCategory
+			SubCategoryDTO subCategoryDTO = new SubCategoryDTO
 			{
-				Id = x.Id,
-				CategoryId = x.CategoryId,
-				Name = x.Name
-			});
+				CategoryId = insertSubCategoryDTO.CategoryId,
+				Name = insertSubCategoryDTO.SubCategoryName,
+				AuditedActivity = DBEnum.AUDITEDACTIVITY_INSERT,
+				AuditedUserId = insertSubCategoryDTO.AuditedUserId,
+				AuditedTime = DateTime.Now
+			};
+
+			Context.SubCategories.Add(subCategoryDTO);
+			Context.SaveChanges();
+			return new ExecuteResultDTO
+			{
+				InstanceId = subCategoryDTO.Id
+			};
 		}
 
-		public async Task<ExecuteResult> InsertSubCategory(InsertSubCategoryDTO insertSubCategoryDTO)
+		public ExecuteResultDTO UpdateSubCategory(UpdateSubCategoryDTO updateSubCategoryDTO)
 		{
-			List<StoredProcedure> storedProcedures = new List<StoredProcedure>();
-			storedProcedures.Add(
-				DbUtil.StoredProcedureBuilder.WithSPName("mssubcategory_insert")
-				.AddParam(insertSubCategoryDTO.CategoryId)
-				.AddParam(insertSubCategoryDTO.SubCategoryName)
-				.AddParam(insertSubCategoryDTO.AuditedUserId)
-				.SP()
-			);
-
-			IEnumerable<ExecuteResultDTO> executeResults = await ExecSPWithTransaction<ExecuteResultDTO>(storedProcedures.ToArray());
-			return executeResults.Select(x => new ExecuteResult
+			SubCategoryDTO subCategoryDTO = new SubCategoryDTO
 			{
-				InstanceId = x.InstanceId
-			}).FirstOrDefault();
-		}
+				Id = updateSubCategoryDTO.SubCategoryId,
+				CategoryId = updateSubCategoryDTO.CategoryId,
+				Name = updateSubCategoryDTO.SubCategoryName,
+				AuditedActivity = DBEnum.AUDITEDACTIVITY_UPDATE,
+				AuditedUserId = updateSubCategoryDTO.AuditedUserId,
+				AuditedTime = DateTime.Now
+			};
 
-		public async Task<ExecuteResult> UpdateSubCategory(UpdateSubCategoryDTO updateSubCategoryDTO)
-		{
-			List<StoredProcedure> storedProcedures = new List<StoredProcedure>();
-			storedProcedures.Add(
-				DbUtil.StoredProcedureBuilder.WithSPName("mssubcategory_update")
-				.AddParam(updateSubCategoryDTO.SubCategoryId)
-				.AddParam(updateSubCategoryDTO.CategoryId)
-				.AddParam(updateSubCategoryDTO.SubCategoryName)
-				.AddParam(updateSubCategoryDTO.AuditedUserId)
-				.SP()
-			);
-
-			IEnumerable<ExecuteResultDTO> executeResults = await ExecSPWithTransaction<ExecuteResultDTO>(storedProcedures.ToArray());
-			return executeResults.Select(x => new ExecuteResult
+			Context.SubCategories.Add(subCategoryDTO);
+			Context.SaveChanges();
+			return new ExecuteResultDTO
 			{
-				InstanceId = x.InstanceId
-			}).FirstOrDefault();
+				InstanceId = subCategoryDTO.Id
+			};
 		}
 	}
 }

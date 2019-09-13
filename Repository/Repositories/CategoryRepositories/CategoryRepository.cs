@@ -4,8 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Model.Domain.DB;
-using Model.Domain.DB.CategoryDB;
-using Model.Domain.DB.SubCategoryDB;
 using Model.DTO.DB;
 using Model.DTO.DB.CategoryDB;
 using Repository.Base;
@@ -18,10 +16,10 @@ namespace Repository.Repositories.CategoryRepositories
 {
     public interface ICategoryRepository : IRepository<CategoryDTO>
     {
-        Task<IEnumerable<Category>> GetCategories();
-        Task<Category> GetCategory(int id);
-        Task<ExecuteResult> InsertCategory(InsertCategoryDTO insertCategoryDTO);
-        Task<ExecuteResult> UpdateCategory(UpdateCategoryDTO insertCategoryDTO);
+        IEnumerable<CategoryDTO> GetCategories();
+        CategoryDTO GetCategory(int id);
+        ExecuteResultDTO InsertCategory(InsertCategoryDTO insertCategoryDTO);
+		ExecuteResultDTO UpdateCategory(UpdateCategoryDTO insertCategoryDTO);
 	}
 
     public class CategoryRepository : BaseRepository<CategoryDTO>, ICategoryRepository
@@ -38,77 +36,41 @@ namespace Repository.Repositories.CategoryRepositories
 			this.options = options;
 		}
 
-        public async Task<IEnumerable<Category>> GetCategories()
+		public IEnumerable<CategoryDTO> GetCategories() => Context.Categories;
+		public CategoryDTO GetCategory(int id) => Context.Categories.Find(id);
+        public ExecuteResultDTO InsertCategory(InsertCategoryDTO insertCategoryDTO)
         {
-            var sp = DbUtil.StoredProcedureBuilder.WithSPName("mscategory_getall").SP();
-            IEnumerable<CategoryDTO> categoryDTOs = await ExecSPToListAsync(sp);
-			IEnumerable<Category> categories = categoryDTOs.Select(x => new Category
+			CategoryDTO categoryDTO = new CategoryDTO
 			{
-				Id = x.Id,
-				Name = x.Name,
-				Subcategories = _SubCategories(x.Id)
-			});
-			return categories;
+				Name = insertCategoryDTO.Name,
+				AuditedActivity = DBEnum.AUDITEDACTIVITY_INSERT,
+				AuditedTime = DateTime.Now,
+				AuditedUserId = insertCategoryDTO.AuditedUserId
+			};
+			Context.Categories.Add(categoryDTO);
+			Context.SaveChanges();
+			return new ExecuteResultDTO
+			{
+				InstanceId = categoryDTO.Id
+			};
         }
 
-		public async Task<Category> GetCategory(int id)
-        {
-            var sp = DbUtil.StoredProcedureBuilder.WithSPName("mscategory_getbyid").AddParam(id).SP();
-            var categoryDTO = await ExecSPToSingleAsync(sp);
-			return new Category
+		public ExecuteResultDTO UpdateCategory(UpdateCategoryDTO updateCategoryDTO)
+		{
+			CategoryDTO categoryDTO = new CategoryDTO
 			{
-				Id = categoryDTO.Id,
-				Name = categoryDTO.Name,
-				Subcategories = _SubCategories(id)
+				Id = updateCategoryDTO.Id,
+				Name = updateCategoryDTO.Name,
+				AuditedUserId = updateCategoryDTO.AuditedUserId,
+				AuditedActivity = DBEnum.AUDITEDACTIVITY_DELETE,
+				AuditedTime = DateTime.Now
+			};
+			Context.Categories.Update(categoryDTO);
+			Context.SaveChanges();
+			return new ExecuteResultDTO
+			{
+				InstanceId = categoryDTO.Id
 			};
 		}
-
-        public async Task<ExecuteResult> InsertCategory(InsertCategoryDTO category)
-        {
-            List<StoredProcedure> storedProcedures = new List<StoredProcedure>();
-            storedProcedures.Add(
-                DbUtil.StoredProcedureBuilder.WithSPName("mscategory_insert")
-                    .AddParam(category.Name) 
-                    .AddParam(category.AuditedUserId)
-                    .SP()
-            );
-			IEnumerable<ExecuteResultDTO> executeResults = await ExecSPWithTransaction<ExecuteResultDTO>(storedProcedures.ToArray());
-			return executeResults.Select(x => new ExecuteResult
-			{
-				InstanceId = x.InstanceId,
-			}).FirstOrDefault();
-        }
-
-		public async Task<ExecuteResult> UpdateCategory(UpdateCategoryDTO category)
-		{
-			List<StoredProcedure> storedProcedures = new List<StoredProcedure>();
-			storedProcedures.Add(
-				DbUtil.StoredProcedureBuilder.WithSPName("mscategory_update")
-					.AddParam(category.Id)
-					.AddParam(category.Name)
-					.AddParam(category.AuditedUserId)
-					.SP()
-			);
-			IEnumerable<ExecuteResultDTO> executeResults = await ExecSPWithTransaction<ExecuteResultDTO>(storedProcedures.ToArray());
-			return executeResults.Select(x => new ExecuteResult
-			{
-				InstanceId = x.InstanceId,
-			}).FirstOrDefault();
-		}
-
-		#region DB Mapping
-		private Lazy<List<SubCategory>> _SubCategories(int CategoryID)
-		{
-			return new Lazy<List<SubCategory>>(() =>
-			{
-				using (var context = new CintaUangDbContext(options))
-				{
-					//do work
-					subCategoryRepository.UseContext(context);
-					return subCategoryRepository.GetSubCategoriesByCategoryID(CategoryID).Result.ToList();
-				}
-			});
-		}
-		#endregion
 	}
 }

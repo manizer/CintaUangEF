@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using Model.Domain.DB.CategoryDB;
-using Model.Domain.DB.SubCategoryDB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Model.Domains.SubCategoryDomains.SubCategoryDomain;
 
 namespace CintaUang.ViewModels.SubCategoryViewModels.Components
 {

@@ -2,16 +2,13 @@
 using CintaUang.ViewModels.CategoryViewModels;
 using CintaUang.ViewModels.CategoryViewModels.Components;
 using Microsoft.AspNetCore.Mvc;
-using Model.Domain.DB;
-using Model.Domain.DB.CategoryDB;
-using Model.DTO.DB;
-using Repository.Base.Helper;
 using Repository.Repositories.CategoryRepositories;
 using Service.Modules;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Model.Domains.CategoryDomains.CategoryDomain;
 
 namespace CintaUang.ViewComponents.CategoryViewComponents
 {
@@ -26,7 +23,7 @@ namespace CintaUang.ViewComponents.CategoryViewComponents
 
 		public async Task<IViewComponentResult> InvokeAsync()
 		{
-			List<Category> Categories = (await categoryService.GetCategories())?.ToList();
+			List<Category> Categories = (categoryService.GetCategories())?.ToList();
 			return View(ViewComponentPath.ViewPath("Category", "_CategoryTable"), new CategoriesTableViewModel
 			{
 				Categories = Categories

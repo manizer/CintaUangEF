@@ -1,13 +1,13 @@
 ﻿using CintaUang.Helpers.ViewComponentHelpers;
 using CintaUang.ViewModels.ExpenseViewModels.Components;
 using Microsoft.AspNetCore.Mvc;
-using Model.Domain.DB.CategoryDB;
 using Model.Lib.DropdownLibs;
 using Service.Modules;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Model.Domains.ExpenseDomains.ExpenseDomain;
 
 namespace CintaUang.ViewComponents.ExpenseViewComponents
 {
@@ -22,7 +22,7 @@ namespace CintaUang.ViewComponents.ExpenseViewComponents
 
 		public async Task<IViewComponentResult> InvokeAsync()
 		{
-			List<Category> categories = (await expenseService.GetCategories()).ToList();
+			List<Category> categories = expenseService.GetCategories().ToList();
 			return View(ViewComponentPath.ViewPath("Expense", "_InsertUpdateExpense"), new InsertUpdateExpenseViewModel
 			{
 				CategorySelectListItems = Dropdown.From(categories),

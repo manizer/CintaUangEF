@@ -1,6 +1,5 @@
 ﻿using Model.Domain.DB;
-using Model.Domain.DB.CategoryDB;
-using Model.Domain.DB.SubCategoryDB;
+using Model.DTO.DB;
 using Model.DTO.DB.SubCategoryDB;
 using Repository.Repositories.CategoryRepositories;
 using Repository.Repositories.SubCategoryRepositories;
@@ -9,16 +8,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Model.Domains.SubCategoryDomains.SubCategoryDomain;
 
 namespace Service.Modules
 {
 	public interface ISubCategoryService
 	{
-		Task<IEnumerable<Category>> GetCategories();
-		Task<IEnumerable<SubCategory>> GetSubcategoriesByCategoryID(int CategoryID);
-        Task<ExecuteResult> InsertSubCategory(InsertSubCategory insertSubCategory);
-        Task<ExecuteResult> UpdateSubCategory(UpdateSubCategory updateSubCategory);
-    }
+		IEnumerable<Category> GetCategories();
+		IEnumerable<SubCategory> GetSubcategoriesByCategoryID(int CategoryID);
+		ExecuteResult InsertSubCategory(InsertSubCategory insertSubCategory);
+		ExecuteResult UpdateSubCategory(UpdateSubCategory updateSubCategory);
+	}
 
 	public class SubCategoryService : ISubCategoryService
 	{
@@ -32,28 +32,52 @@ namespace Service.Modules
 			this.categoryRepository = categoryRepository;
 		}
 
-		public async Task<IEnumerable<Category>> GetCategories() => await categoryRepository.GetCategories();
-		public async Task<IEnumerable<SubCategory>> GetSubcategoriesByCategoryID(int CategoryID) => await subCategoryRepository.GetSubCategoriesByCategoryID(CategoryID);
+		public IEnumerable<Category> GetCategories() => categoryRepository.GetCategories()
+			.Select(x => new Category
+			{
+				Id = x.Id,
+				Name = x.Name
+			});
 
-        public async Task<ExecuteResult> InsertSubCategory(InsertSubCategory insertSubCategory)
-        {
-            return await subCategoryRepository.InsertSubCategory(new InsertSubCategoryDTO
-            {
-                CategoryId = insertSubCategory.CategoryId,
-                SubCategoryName = insertSubCategory.SubCategoryName,
-                AuditedUserId = insertSubCategory.AuditedUserId
-            });
-        }
+		public IEnumerable<SubCategory> GetSubcategoriesByCategoryID(int CategoryID) => subCategoryRepository.GetSubCategoriesByCategoryID(CategoryID)
+			.Select(x => new SubCategory
+			{
+				Id = x.Id,
+				Name = x.Name,
+				CategoryId = x.CategoryId
+			});
 
-        public async Task<ExecuteResult> UpdateSubCategory(UpdateSubCategory updateSubCategory)
-        {
-            return await subCategoryRepository.UpdateSubCategory(new UpdateSubCategoryDTO
-            {
-                SubCategoryId = updateSubCategory.SubCategoryId,
-                CategoryId = updateSubCategory.CategoryId,
-                SubCategoryName = updateSubCategory.SubCategoryName,
-                AuditedUserId = updateSubCategory.AuditedUserId,
-            });
-        }
-    }
+		public ExecuteResult InsertSubCategory(InsertSubCategory insertSubCategory)
+		{
+			InsertSubCategoryDTO insertSubCategoryDTO = new InsertSubCategoryDTO
+			{
+				CategoryId = insertSubCategory.CategoryId,
+				AuditedUserId = insertSubCategory.AuditedUserId,
+				SubCategoryName = insertSubCategory.SubCategoryName
+			};
+
+			ExecuteResultDTO executeResultDTO = subCategoryRepository.InsertSubCategory(insertSubCategoryDTO);
+			return new ExecuteResult
+			{
+				InstanceId = executeResultDTO.InstanceId
+			};
+		}
+
+		public ExecuteResult UpdateSubCategory(UpdateSubCategory updateSubCategory)
+		{
+			UpdateSubCategoryDTO updateSubCategoryDTO = new UpdateSubCategoryDTO
+			{
+				CategoryId = updateSubCategory.CategoryId,
+				AuditedUserId = updateSubCategory.AuditedUserId,
+				SubCategoryName = updateSubCategory.SubCategoryName,
+				SubCategoryId = updateSubCategory.SubCategoryId
+			};
+
+			ExecuteResultDTO executeResultDTO = subCategoryRepository.UpdateSubCategory(updateSubCategoryDTO);
+			return new ExecuteResult
+			{
+				InstanceId = executeResultDTO.InstanceId
+			};
+		}
+	}
 }

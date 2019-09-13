@@ -1,6 +1,6 @@
 ﻿using Model.Domain.DB;
-using Model.Domain.DB.CategoryDB;
 using Model.Domain.DB.DataTable;
+using Model.DTO.DB;
 using Model.DTO.DB.CategoryDB;
 using Model.DTO.DB.DataTable;
 using Repository.Repositories.CategoryRepositories;
@@ -9,16 +9,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Model.Domains.CategoryDomains.CategoryDomain;
 
 namespace Service.Modules
 {
 	public interface ICategoryService
 	{
-		Task<IEnumerable<Category>> GetCategories();
-		Task<Category> GetCategory(int CategoryId);
+		IEnumerable<Category> GetCategories();
+		Category GetCategory(int CategoryId);
 		Task<AjaxDataTable<CategoryDataTableRow>> GetCategoryDataTable(int Page, int Take, string Search, int OrderColIdx, string OrderDirection);
-		Task<ExecuteResult> Insert(InsertCategory insertCategory);
-		Task<ExecuteResult> Update(UpdateCategory insertCategory);
+		ExecuteResult Insert(InsertCategory insertCategory);
+		ExecuteResult Update(UpdateCategory insertCategory);
 	}
 
 	public class CategoryService : ICategoryService
@@ -36,14 +37,24 @@ namespace Service.Modules
 			this.serviceProvider = serviceProvider;
 		}
 
-		public async Task<IEnumerable<Category>> GetCategories()
+		public IEnumerable<Category> GetCategories()
 		{
-			return await categoryRepository.GetCategories();
+			IEnumerable<CategoryDTO> categoryDtos = categoryRepository.GetCategories();
+			return categoryDtos.Select(x => new Category
+			{
+				Id = x.Id,
+				Name = x.Name
+			});
 		}
 
-		public async Task<Category> GetCategory(int CategoryId)
+		public Category GetCategory(int CategoryId)
 		{
-			return await categoryRepository.GetCategory(CategoryId);
+			CategoryDTO categoryDTO = categoryRepository.GetCategory(CategoryId);
+			return new Category
+			{
+				Id = categoryDTO.Id,
+				Name = categoryDTO.Name	
+			};
 		}
 
 		public async Task<AjaxDataTable<CategoryDataTableRow>> GetCategoryDataTable(int Page, int Take, string Search, int OrderColIdx, string OrderDirection)
@@ -63,23 +74,33 @@ namespace Service.Modules
 			return categoryAjaxDataTable;
 		}
 
-		public async Task<ExecuteResult> Insert(InsertCategory insertCategory)
+		public ExecuteResult Insert(InsertCategory insertCategory)
 		{
-			return await categoryRepository.InsertCategory(new InsertCategoryDTO
+			InsertCategoryDTO insertCategoryDTO = new InsertCategoryDTO
 			{
 				Name = insertCategory.Name,
 				AuditedUserId = insertCategory.AuditedUserId
-			});
+			};
+			ExecuteResultDTO executeResultDTO = categoryRepository.InsertCategory(insertCategoryDTO);
+			return new ExecuteResult
+			{
+				InstanceId = executeResultDTO.InstanceId
+			};
 		}
 
-		public async Task<ExecuteResult> Update(UpdateCategory updateCategory)
+		public ExecuteResult Update(UpdateCategory updateCategory)
 		{
-			return await categoryRepository.UpdateCategory(new UpdateCategoryDTO
+			UpdateCategoryDTO updateCategoryDTO = new UpdateCategoryDTO
 			{
 				Id = updateCategory.Id,
 				Name = updateCategory.Name,
 				AuditedUserId = updateCategory.AuditedUserId
-			});
+			};
+			ExecuteResultDTO executeResultDTO = categoryRepository.UpdateCategory(updateCategoryDTO);
+			return new ExecuteResult
+			{
+				InstanceId = executeResultDTO.InstanceId
+			};
 		}
 	}
 }

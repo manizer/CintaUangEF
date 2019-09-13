@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Model.Domain.DB.MenuDB;
 using Model.DTO.DB.MenuDB;
 using Repository.Base;
 using Repository.Base.Helper;
@@ -9,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Model.Domains.LayoutDomains.LayoutDomain;
 
 namespace Repository.Repositories.MenuRepositories
 {

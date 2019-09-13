@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Model.Lib.DropdownLibs
 {
-	public interface DropdownItem : SubDropdownItemProviderFactory
+	public interface DropdownItem
 	{
 		string DropdownValue();
 		string DropdownText();

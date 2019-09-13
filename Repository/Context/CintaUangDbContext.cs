@@ -14,12 +14,18 @@ namespace Repository.Context
         {
         }
 
+		// TODO: Delete later
         public DbSet<ExecuteResultDTO> ExecuteResultDbSet { get; set; }
         public DbSet<CategoryDTO> CategoryDbSet { get; set; }
         public DbSet<SubCategoryDTO> SubCategoryDbSet { get; set; }
 		public DbSet<UserDTO> UserDbSet { get; set; }
 
+		public DbSet<ExecuteResultDTO> ExecuteResults { get; set; }
+		public DbSet<CategoryDTO> Categories { get; set; }
+		public DbSet<SubCategoryDTO> SubCategories { get; set; }
+		public DbSet<UserDTO> Users { get; set; }
+
 		// DataTable
-        public DbSet<CategoryDataTableRowDTO> CategoryDataTableRowDbSet { get; set; }
+		public DbSet<CategoryDataTableRowDTO> CategoryDataTableRowDbSet { get; set; }
     }
 }

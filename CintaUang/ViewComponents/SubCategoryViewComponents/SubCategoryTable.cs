@@ -2,13 +2,13 @@
 using CintaUang.ViewModels.SubCategoryViewModels.Components;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Model.Domain.DB.CategoryDB;
 using Model.Lib.DropdownLibs;
 using Service.Modules;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Model.Domains.SubCategoryDomains.SubCategoryDomain;
 
 namespace CintaUang.ViewComponents.SubCategoryViewComponents
 {
@@ -23,12 +23,12 @@ namespace CintaUang.ViewComponents.SubCategoryViewComponents
 
 		public async Task<IViewComponentResult> InvokeAsync(int CategoryId)
 		{
-			List<Category> categories = (await subCategoryService.GetCategories()).ToList();
+			List<Category> categories = subCategoryService.GetCategories().ToList();
 			return View(ViewComponentPath.ViewPath("SubCategory", "_SubCategoryTable"), new SubCategoriesTableViewModel
 			{
 				CategorySelectListItems = Dropdown.From(categories),
 				CategoryId = CategoryId,
-				SubCategories = (await subCategoryService.GetSubcategoriesByCategoryID(CategoryId)).ToList()
+				SubCategories = subCategoryService.GetSubcategoriesByCategoryID(CategoryId).ToList()
 			});
 		}
 	}

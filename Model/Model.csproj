@@ -10,6 +10,10 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Domains\DB\DataTable\CategoryDataTableRow.cs" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.1">
       <!-- <PrivateAssets Condition="'%(PackageReference.Version)' == ''">all</PrivateAssets>

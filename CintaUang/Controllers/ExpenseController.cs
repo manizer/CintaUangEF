@@ -15,7 +15,7 @@ namespace CintaUang.Controllers
         }
 
 		#region ViewComponent
-		public async Task<IActionResult> InsertUpdateExpenseOnSubmit(InsertUpdateExpenseViewModel insertUpdateExpenseViewModel)
+		public IActionResult InsertUpdateExpenseOnSubmit(InsertUpdateExpenseViewModel insertUpdateExpenseViewModel)
 		{
 			return ViewComponent("InsertUpdateExpense", insertUpdateExpenseViewModel.ExpenseId);
 		}
