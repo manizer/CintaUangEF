@@ -29,8 +29,10 @@ namespace CintaUang
 
         public void ConfigureServices(IServiceCollection services)
         {
-            // Internal Repo & Service Registration
-            services.AddTransient<IStoredProcedureBuilder, PGStoredProcedureBuilder>();
+			// Internal Repo & Service Registration
+			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+			services.AddSingleton<DbContextFactory>();
+			services.AddTransient<IStoredProcedureBuilder, PGStoredProcedureBuilder>();
             services.AddTransient<DbUtil>();
             services.AddEntityFrameworkNpgsql()
                 .AddDbContext<CintaUangDbContext>(options =>

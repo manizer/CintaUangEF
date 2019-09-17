@@ -10,6 +10,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "Repository\Re
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "Service\Service.csproj", "{77FC64AD-5644-44B4-BE31-F21810905BB9}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Helper", "Helper\Helper.csproj", "{08BEB190-196D-44B5-A98E-0EB8722BC6AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,29 +34,15 @@ Global
 		{77FC64AD-5644-44B4-BE31-F21810905BB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77FC64AD-5644-44B4-BE31-F21810905BB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77FC64AD-5644-44B4-BE31-F21810905BB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08BEB190-196D-44B5-A98E-0EB8722BC6AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08BEB190-196D-44B5-A98E-0EB8722BC6AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08BEB190-196D-44B5-A98E-0EB8722BC6AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08BEB190-196D-44B5-A98E-0EB8722BC6AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A62A3BE1-9DE1-48EA-A54C-412D58EE97DB}
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 5
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://10.21.50.51:8080/tfs/itresourcecenter
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = CintaUang\\CintaUang.csproj
-		SccProjectName1 = CintaUang
-		SccLocalPath1 = CintaUang
-		SccProjectUniqueName2 = Model\\Model.csproj
-		SccProjectName2 = Model
-		SccLocalPath2 = Model
-		SccProjectUniqueName3 = Repository\\Repository.csproj
-		SccProjectName3 = Repository
-		SccLocalPath3 = Repository
-		SccProjectUniqueName4 = Service\\Service.csproj
-		SccProjectName4 = Service
-		SccLocalPath4 = Service
 	EndGlobalSection
 EndGlobal

@@ -23,9 +23,9 @@ namespace CintaUang.Controllers
 			List<DropdownItem> DropdownItems = SelectListItemsRegistry.Get().GetFromDict(ParentId);
 			DropdownItem selectedDdlItem = DropdownItems.Where(x => x.DropdownValue() == ParentValue.ToString()).FirstOrDefault();
 
-			if (selectedDdlItem.GetType() != typeof(SubDropdownItemProviderFactory))
+			if (!typeof(SubDropdownItemProviderFactory).IsAssignableFrom(selectedDdlItem.GetType()))
 			{
-				throw new InvalidParentDropdownException($"Unable to create SubDropdownFactory from parent dropdown {ParentId}, make sure parent dropdown implements SubDropdownItemProviderFactory");
+				throw new InvalidParentDropdownException($"Unable to create SubDropdownFactory from parent dropdown {ParentId} (Class: {selectedDdlItem.GetType().FullName}), make sure {selectedDdlItem.GetType().FullName} implements SubDropdownItemProviderFactory");
 			}
 
 			SubDropdownItemProviderFactory subDropdownItemProviderFactory = (SubDropdownItemProviderFactory)selectedDdlItem;

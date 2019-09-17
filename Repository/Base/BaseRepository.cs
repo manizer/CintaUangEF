@@ -14,15 +14,21 @@ namespace Repository.Base
     {
         protected CintaUangDbContext Context;
         private CintaUangDbContext PrevDbContext;
-        protected readonly DbUtil DbUtil;
+        protected readonly DbUtil DbUtil = null;
 
-        public BaseRepository(CintaUangDbContext context, DbUtil dbUtil)
+		// For EntityFrameworkCore, extend from this ctor
+        public BaseRepository(CintaUangDbContext context)
         {
             Context = context;
-            DbUtil = dbUtil;
         }
 
-        public async Task<IEnumerable<TEntity>> ExecSPToListAsync(StoredProcedure sp)
+		public BaseRepository(CintaUangDbContext context, DbUtil dbUtil)
+		{
+			Context = context;
+			DbUtil = dbUtil;
+		}
+
+		public async Task<IEnumerable<TEntity>> ExecSPToListAsync(StoredProcedure sp)
         {
             Task<IEnumerable<TEntity>> Result;
             try
@@ -92,10 +98,10 @@ namespace Repository.Base
             return await Task.FromResult(ExecuteResults.AsEnumerable());
         }
 
-		public void UseContext(CintaUangDbContext context)
+		public void UseContext(DbContext context)
         {
             PrevDbContext = this.Context;
-            this.Context = context;
+            this.Context = (CintaUangDbContext) context;
         }
 
         public void RevertToPreviousDbContext()

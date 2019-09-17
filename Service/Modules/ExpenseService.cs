@@ -20,14 +20,14 @@ namespace Service.Modules
 	{
 		private readonly ICategoryRepository categoryRepository;
 		private readonly ISubCategoryRepository subCategoryRepository;
-		private readonly DbContextOptions<CintaUangDbContext> options;
+		private readonly DbContextFactory dbContextFactory;
 
 		public ExpenseService(ICategoryRepository categoryRepository, ISubCategoryRepository subCategoryRepository,
-			DbContextOptions<CintaUangDbContext> options)
+			DbContextFactory dbContextFactory)
 		{
 			this.categoryRepository = categoryRepository;
 			this.subCategoryRepository = subCategoryRepository;
-			this.options = options;
+			this.dbContextFactory = dbContextFactory;
 		}
 
 		public IEnumerable<Category> GetCategories() => categoryRepository.GetCategories()
@@ -37,9 +37,8 @@ namespace Service.Modules
 				Name = x.Name,
 				SubCategories = new Lazy<List<SubCategory>>(() =>
 				{
-					using (var context = new CintaUangDbContext(options))
+					using (var context = dbContextFactory.GetContext())
 					{
-						//do work
 						subCategoryRepository.UseContext(context);
 						var subcategories = subCategoryRepository.GetSubCategoriesByCategoryID(x.Id)
 							.Select(s => new SubCategory

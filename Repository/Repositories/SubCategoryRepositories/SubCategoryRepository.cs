@@ -23,7 +23,7 @@ namespace Repository.Repositories.SubCategoryRepositories
 
 	public class SubCategoryRepository : BaseRepository<SubCategoryDTO>, ISubCategoryRepository
 	{
-		public SubCategoryRepository(CintaUangDbContext dbContext, DbUtil dbUtil) : base(dbContext, dbUtil)
+		public SubCategoryRepository(CintaUangDbContext dbContext) : base(dbContext)
 		{
 		}
 
@@ -34,10 +34,7 @@ namespace Repository.Repositories.SubCategoryRepositories
 			SubCategoryDTO subCategoryDTO = new SubCategoryDTO
 			{
 				CategoryId = insertSubCategoryDTO.CategoryId,
-				Name = insertSubCategoryDTO.SubCategoryName,
-				AuditedActivity = DBEnum.AUDITEDACTIVITY_INSERT,
-				AuditedUserId = insertSubCategoryDTO.AuditedUserId,
-				AuditedTime = DateTime.Now
+				Name = insertSubCategoryDTO.SubCategoryName
 			};
 
 			Context.SubCategories.Add(subCategoryDTO);
@@ -54,10 +51,7 @@ namespace Repository.Repositories.SubCategoryRepositories
 			{
 				Id = updateSubCategoryDTO.SubCategoryId,
 				CategoryId = updateSubCategoryDTO.CategoryId,
-				Name = updateSubCategoryDTO.SubCategoryName,
-				AuditedActivity = DBEnum.AUDITEDACTIVITY_UPDATE,
-				AuditedUserId = updateSubCategoryDTO.AuditedUserId,
-				AuditedTime = DateTime.Now
+				Name = updateSubCategoryDTO.SubCategoryName
 			};
 
 			Context.SubCategories.Add(subCategoryDTO);

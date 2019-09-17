@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CintaUang.Core.ApplicationSession;
 using CintaUang.ViewModels.CategoryViewModels;
+using Helper.Session;
 using Microsoft.AspNetCore.Mvc;
 using Model.Domain;
 using Model.Domain.DB;
@@ -43,8 +43,7 @@ namespace CintaUang.Controllers.CategoryControllers
 					// Insert
 					ExecuteResult insertResult = categoryService.Insert(new InsertCategory
 					{
-						Name = indexViewModel.CategoryName,
-						AuditedUserId = HttpContext.Session.GetLoginUserId() ?? 0
+						Name = indexViewModel.CategoryName
 					});
 					AddNotification(ViewNotification.Make("Insert Success", "Success"));
 				}
@@ -54,8 +53,7 @@ namespace CintaUang.Controllers.CategoryControllers
 					ExecuteResult updateResult = categoryService.Update(new UpdateCategory
 					{
 						Id = indexViewModel.CategoryId,
-						Name = indexViewModel.CategoryName,
-						AuditedUserId = HttpContext.Session.GetLoginUserId() ?? 0
+						Name = indexViewModel.CategoryName
 					});
 					AddNotification(ViewNotification.Make("Update Success", ViewNotification.SUCCESS));
 				}

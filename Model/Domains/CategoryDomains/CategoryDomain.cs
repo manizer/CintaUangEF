@@ -17,14 +17,12 @@ namespace Model.Domains.CategoryDomains
 		public class InsertCategory
 		{
 			public string Name { get; set; }
-			public int AuditedUserId { get; set; }
 		}
 
 		public class UpdateCategory
 		{
 			public int Id { get; set; }
 			public string Name { get; set; }
-			public int AuditedUserId { get; set; }
 		}
 
 		public class DeleteCategory

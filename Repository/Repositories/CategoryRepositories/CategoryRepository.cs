@@ -18,55 +18,54 @@ namespace Repository.Repositories.CategoryRepositories
     {
         IEnumerable<CategoryDTO> GetCategories();
         CategoryDTO GetCategory(int id);
-        ExecuteResultDTO InsertCategory(InsertCategoryDTO insertCategoryDTO);
-		ExecuteResultDTO UpdateCategory(UpdateCategoryDTO insertCategoryDTO);
+        ExecuteResultDTO InsertCategory(CategoryDTO categoryDTO);
+		ExecuteResultDTO UpdateCategory(CategoryDTO categoryDTO);
+		ExecuteResultDTO DeleteCategory(int Id);
 	}
 
     public class CategoryRepository : BaseRepository<CategoryDTO>, ICategoryRepository
 	{ 
-		private readonly ISubCategoryRepository subCategoryRepository;
-		private readonly DbContextOptions<CintaUangDbContext> options;
-
-        public CategoryRepository(CintaUangDbContext dbContext, DbUtil dbUtil,
-			ISubCategoryRepository subCategoryRepository,
-			DbContextOptions<CintaUangDbContext> options,
-			UnitOfWork unitOfWork) : base(dbContext, dbUtil)
+        public CategoryRepository(CintaUangDbContext dbContext, DbContextOptions<CintaUangDbContext> options) : base(dbContext)
 		{
-			this.subCategoryRepository = subCategoryRepository;
-			this.options = options;
 		}
 
-		public IEnumerable<CategoryDTO> GetCategories() => Context.Categories;
+		public IEnumerable<CategoryDTO> GetCategories() => Context.Categories.Where(x => x.AuditedActivity != DBEnum.AUDITEDACTIVITY_DELETE);
 		public CategoryDTO GetCategory(int id) => Context.Categories.Find(id);
-        public ExecuteResultDTO InsertCategory(InsertCategoryDTO insertCategoryDTO)
+        public ExecuteResultDTO InsertCategory(CategoryDTO categoryDTO)
         {
-			CategoryDTO categoryDTO = new CategoryDTO
-			{
-				Name = insertCategoryDTO.Name,
-				AuditedActivity = DBEnum.AUDITEDACTIVITY_INSERT,
-				AuditedTime = DateTime.Now,
-				AuditedUserId = insertCategoryDTO.AuditedUserId
-			};
 			Context.Categories.Add(categoryDTO);
 			Context.SaveChanges();
+
+			try
+			{
+				Context.Remove(categoryDTO);
+				Context.SaveDeletion();
+			}
+			catch(Exception ex)
+			{
+
+			}
 			return new ExecuteResultDTO
 			{
 				InstanceId = categoryDTO.Id
 			};
         }
 
-		public ExecuteResultDTO UpdateCategory(UpdateCategoryDTO updateCategoryDTO)
+		public ExecuteResultDTO UpdateCategory(CategoryDTO categoryDTO)
 		{
-			CategoryDTO categoryDTO = new CategoryDTO
-			{
-				Id = updateCategoryDTO.Id,
-				Name = updateCategoryDTO.Name,
-				AuditedUserId = updateCategoryDTO.AuditedUserId,
-				AuditedActivity = DBEnum.AUDITEDACTIVITY_DELETE,
-				AuditedTime = DateTime.Now
-			};
 			Context.Categories.Update(categoryDTO);
 			Context.SaveChanges();
+			return new ExecuteResultDTO
+			{
+				InstanceId = categoryDTO.Id
+			};
+		}
+
+		public ExecuteResultDTO DeleteCategory(int Id)
+		{
+			CategoryDTO categoryDTO = Context.Categories.FirstOrDefault(x => x.Id == Id);
+			Context.Remove(categoryDTO);
+			Context.SaveDeletion();
 			return new ExecuteResultDTO
 			{
 				InstanceId = categoryDTO.Id

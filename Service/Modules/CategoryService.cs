@@ -20,6 +20,7 @@ namespace Service.Modules
 		Task<AjaxDataTable<CategoryDataTableRow>> GetCategoryDataTable(int Page, int Take, string Search, int OrderColIdx, string OrderDirection);
 		ExecuteResult Insert(InsertCategory insertCategory);
 		ExecuteResult Update(UpdateCategory insertCategory);
+		ExecuteResult Delete(int Id);
 	}
 
 	public class CategoryService : ICategoryService
@@ -76,12 +77,10 @@ namespace Service.Modules
 
 		public ExecuteResult Insert(InsertCategory insertCategory)
 		{
-			InsertCategoryDTO insertCategoryDTO = new InsertCategoryDTO
+			ExecuteResultDTO executeResultDTO = categoryRepository.InsertCategory(new CategoryDTO
 			{
-				Name = insertCategory.Name,
-				AuditedUserId = insertCategory.AuditedUserId
-			};
-			ExecuteResultDTO executeResultDTO = categoryRepository.InsertCategory(insertCategoryDTO);
+				Name = insertCategory.Name
+			});
 			return new ExecuteResult
 			{
 				InstanceId = executeResultDTO.InstanceId
@@ -90,13 +89,20 @@ namespace Service.Modules
 
 		public ExecuteResult Update(UpdateCategory updateCategory)
 		{
-			UpdateCategoryDTO updateCategoryDTO = new UpdateCategoryDTO
+			ExecuteResultDTO executeResultDTO = categoryRepository.UpdateCategory(new CategoryDTO
 			{
 				Id = updateCategory.Id,
-				Name = updateCategory.Name,
-				AuditedUserId = updateCategory.AuditedUserId
+				Name = updateCategory.Name
+			});
+			return new ExecuteResult
+			{
+				InstanceId = executeResultDTO.InstanceId
 			};
-			ExecuteResultDTO executeResultDTO = categoryRepository.UpdateCategory(updateCategoryDTO);
+		}
+
+		public ExecuteResult Delete(int Id)
+		{
+			ExecuteResultDTO executeResultDTO = categoryRepository.DeleteCategory(Id);
 			return new ExecuteResult
 			{
 				InstanceId = executeResultDTO.InstanceId

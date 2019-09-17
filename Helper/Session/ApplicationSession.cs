@@ -1,17 +1,16 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
-namespace CintaUang.Core.ApplicationSession
+namespace Helper.Session
 {
 	public static class ApplicationSession
 	{
 		// Login User Data
 		private static string LOGIN_USER_ID = "LOGIN_USER_ID";
 		private static string LOGIN_USER_NAME = "LOGIN_USER_NAME";
-		
+
 		public static Int32? GetLoginUserId(this ISession session) => 1;
 		public static void SetLoginUserId(this ISession session, Int32 LoginUserId) => session.SetInt32(LOGIN_USER_ID, LoginUserId);
 

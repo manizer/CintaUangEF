@@ -8,10 +8,25 @@ namespace Model.DTO.DB
 	public class BaseModel
 	{
 		[Column("auditedactivity")]
-		public char AuditedActivity { get; set; }
+		public char AuditedActivity { get; private set; }
 		[Column("auditeduserid")]
-		public int AuditedUserId { get; set; }
+		public int AuditedUserId { get; private set; }
 		[Column("auditedtime")]
-		public DateTime AuditedTime { get; set; }
+		public DateTime AuditedTime { get; private set; }
+
+		public void SetAuditedActivity(char AuditedActivity)
+		{
+			this.AuditedActivity = AuditedActivity;
+		}
+
+		public void SetAuditedUserId(int AuditedUserId)
+		{
+			this.AuditedUserId = AuditedUserId;
+		}
+
+		public void SetAuditedTime(DateTime AuditedTime)
+		{
+			this.AuditedTime = AuditedTime;
+		}
 	}
 }
