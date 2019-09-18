@@ -24,6 +24,7 @@ namespace Model.Domains.SubCategoryDomains
 			public int Id { get; set; }
 			public int CategoryId { get; set; }
 			public string Name { get; set; }
+			public Lazy<Category> Category { get; set; }
 		}
 
 		public class InsertSubCategory

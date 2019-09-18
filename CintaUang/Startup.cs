@@ -47,7 +47,6 @@ namespace CintaUang
 			 * Repositories
 			 */
             services.AddTransient<ICategoryRepository, CategoryRepository>();
-			services.AddTransient<ICategoryDataTableRepository, CategoryDataTableRepository>();
 			services.AddTransient<ICategoryService, CategoryService>();
 
             services.AddTransient<IUserRepository, UserRepository>();

@@ -18,7 +18,6 @@ namespace Service.Modules
 	{
 		IEnumerable<Category> GetCategories();
 		Category GetCategory(int CategoryId);
-		Task<AjaxDataTable<CategoryDataTableRow>> GetCategoryDataTable(int Page, int Take, string Search, int OrderColIdx, string OrderDirection);
 		ExecuteResult Insert(InsertCategory insertCategory);
 		ExecuteResult Update(UpdateCategory insertCategory);
 		ExecuteResult Delete(int Id);
@@ -27,15 +26,12 @@ namespace Service.Modules
 	public class CategoryService : ICategoryService
 	{
 		private readonly ICategoryRepository categoryRepository;
-		private readonly ICategoryDataTableRepository categoryDataTableRepository;
 		private readonly IServiceProvider serviceProvider;
 
 		public CategoryService(ICategoryRepository categoryRepository,
-			ICategoryDataTableRepository categoryDataTableRepository,
 			IServiceProvider serviceProvider)
 		{
 			this.categoryRepository = categoryRepository;
-			this.categoryDataTableRepository = categoryDataTableRepository;
 			this.serviceProvider = serviceProvider;
 		}
 
@@ -54,23 +50,6 @@ namespace Service.Modules
 		{
 			CategoryDTO categoryDTO = categoryRepository.GetCategory(CategoryId);
             return new Category().CopyPropertiesFrom(categoryDTO);
-		}
-
-		public async Task<AjaxDataTable<CategoryDataTableRow>> GetCategoryDataTable(int Page, int Take, string Search, int OrderColIdx, string OrderDirection)
-		{
-			AjaxDataTableDTO<CategoryDataTableRowDTO> categoryAjaxDataTableDTO = await categoryDataTableRepository.GetCategoryDataTable(Page, Take, Search, OrderColIdx, OrderDirection);
-			AjaxDataTable<CategoryDataTableRow> categoryAjaxDataTable = new AjaxDataTable<CategoryDataTableRow>
-			{
-				Draw = categoryAjaxDataTableDTO.Draw,
-				RecordsFiltered = categoryAjaxDataTableDTO.RecordsFiltered,
-				RecordsTotal = categoryAjaxDataTableDTO.RecordsTotal,
-				Data = categoryAjaxDataTableDTO.Data.Select(x => new CategoryDataTableRow
-				{
-					Id = x.Id,
-					Name = x.Name
-				}).ToList()
-			};
-			return categoryAjaxDataTable;
 		}
 
 		public ExecuteResult Insert(InsertCategory insertCategory)

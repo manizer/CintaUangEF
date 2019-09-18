@@ -1,6 +1,8 @@
-﻿using Model.Domain.DB;
+﻿using Helper.Object;
+using Model.Domain.DB;
 using Model.DTO.DB;
 using Model.DTO.DB.SubCategoryDB;
+using Repository.Context;
 using Repository.Repositories.CategoryRepositories;
 using Repository.Repositories.SubCategoryRepositories;
 using System;
@@ -24,9 +26,11 @@ namespace Service.Modules
 	{
 		private readonly ISubCategoryRepository subCategoryRepository;
 		private readonly ICategoryRepository categoryRepository;
+		private readonly DbContextFactory dbContextFactory;
 
 		public SubCategoryService(ISubCategoryRepository subCategoryRepository,
-			ICategoryRepository categoryRepository)
+			ICategoryRepository categoryRepository,
+			DbContextFactory dbContextFactory)
 		{
 			this.subCategoryRepository = subCategoryRepository;
 			this.categoryRepository = categoryRepository;
@@ -44,7 +48,16 @@ namespace Service.Modules
 			{
 				Id = x.Id,
 				Name = x.Name,
-				CategoryId = x.CategoryId
+				CategoryId = x.CategoryId,
+				Category = new Lazy<Category>(() =>
+				{
+					using (var context = dbContextFactory.GetContext())
+					{
+						subCategoryRepository.UseContext(context);
+						Category category = (new Category()).CopyPropertiesFrom(categoryRepository.GetCategory(x.CategoryId));
+						return category;
+					}
+				})
 			});
 
 		public ExecuteResult InsertSubCategory(InsertSubCategory insertSubCategory)

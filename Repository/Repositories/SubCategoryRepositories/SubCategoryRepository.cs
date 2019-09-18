@@ -27,7 +27,9 @@ namespace Repository.Repositories.SubCategoryRepositories
 		{
 		}
 
-		public IEnumerable<SubCategoryDTO> GetSubCategoriesByCategoryID(int CategoryID) => Context.SubCategories.Where(x => x.CategoryId == CategoryID);
+		public IEnumerable<SubCategoryDTO> GetSubCategoriesByCategoryID(int CategoryID) => Context.SubCategories.Where(x =>
+			x.CategoryId == CategoryID &&
+			!x.AuditedActivity.Equals(DBEnum.AUDITEDACTIVITY_DELETE));
 
 		public ExecuteResultDTO InsertSubCategory(InsertSubCategoryDTO insertSubCategoryDTO)
 		{

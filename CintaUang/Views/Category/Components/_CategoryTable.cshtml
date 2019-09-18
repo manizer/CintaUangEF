@@ -9,25 +9,13 @@
             <th>Nama</th>
         </tr>
     </thead>
-    <tbody></tbody>
+    <tbody>
+        @foreach(var Category in Model.Categories)
+        {
+            <tr>
+                <td>@Category.Id</td>
+                <td>@Category.Name</td>
+            </tr>
+        }
+    </tbody>
 </datatable>
-
-<script type="text/javascript">
-    var table =
-        $("#categories-datatable").DataTable({
-            "processing": true,
-            "serverSide": true,
-            "stateSave": false,
-            "autoWidth": true,
-            "pagingType": "first_last_numbers",
-            "ajax": {
-                "url": "/Category/DTT",
-                "type": "GET",
-                "datatype": "json"
-            },
-            "columns": [
-                { "data": "id", "orderable": false, "className": "CategoryId" },
-                { "data": "name", "orderable": false, "className": "CategoryName" },
-            ]
-        });
-</script>

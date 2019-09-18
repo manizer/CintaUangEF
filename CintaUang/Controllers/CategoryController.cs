@@ -66,20 +66,5 @@ namespace CintaUang.Controllers.CategoryControllers
 
 			return RedirectToAction("Index", "Category");
 		}
-
-		public async Task<JsonResult> DTT(int draw, int start, int length)
-		{
-			try
-			{
-				int Page = (start / length) + 1;
-				AjaxDataTable<CategoryDataTableRow> categoryAjaxDataTable = await categoryService.GetCategoryDataTable(Page, length , "", 0, AjaxDataTableCriteria.SortDirection.ASC);
-				categoryAjaxDataTable.Draw = draw;
-				return Json(categoryAjaxDataTable);
-			}
-			catch(Exception e)
-			{
-				throw e;
-			}
-		}
 	}
 }

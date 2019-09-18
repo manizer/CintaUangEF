@@ -26,7 +26,10 @@ namespace Repository.Repositories.ExpenseRepositories
 						   join c in Context.Categories on b.CategoryId equals c.Id
 						   where a.Name.Contains(Search) &&
 						   b.Name.Contains(Search) &&
-						   c.Name.Contains(Search)
+						   c.Name.Contains(Search) &&
+						   b.AuditedActivity != 'D' &&
+						   c.AuditedActivity != 'D' &&
+						   a.AuditedActivity != 'D'
 						   orderby a.Id
 						   select new
 						   {
