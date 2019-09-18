@@ -1,4 +1,5 @@
-﻿using Model.Domain.DB;
+﻿using Helper.Object;
+using Model.Domain.DB;
 using Model.Domain.DB.DataTable;
 using Model.DTO.DB;
 using Model.DTO.DB.CategoryDB;
@@ -41,21 +42,18 @@ namespace Service.Modules
 		public IEnumerable<Category> GetCategories()
 		{
 			IEnumerable<CategoryDTO> categoryDtos = categoryRepository.GetCategories();
-			return categoryDtos.Select(x => new Category
-			{
-				Id = x.Id,
-				Name = x.Name
-			});
+            List<Category> categories = new List<Category>();
+            foreach (var categoryDto in categoryDtos)
+            {
+                categories.Add(new Category().CopyPropertiesFrom(categoryDto));
+            }
+            return categories;
 		}
 
 		public Category GetCategory(int CategoryId)
 		{
 			CategoryDTO categoryDTO = categoryRepository.GetCategory(CategoryId);
-			return new Category
-			{
-				Id = categoryDTO.Id,
-				Name = categoryDTO.Name	
-			};
+            return new Category().CopyPropertiesFrom(categoryDTO);
 		}
 
 		public async Task<AjaxDataTable<CategoryDataTableRow>> GetCategoryDataTable(int Page, int Take, string Search, int OrderColIdx, string OrderDirection)
