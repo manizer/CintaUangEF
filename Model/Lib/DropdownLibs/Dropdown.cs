@@ -8,10 +8,12 @@ namespace Model.Lib.DropdownLibs
 {
 	public class Dropdown
 	{
-		public static List<SelectListItem> From(IEnumerable<DropdownItem> dropdownItems) => dropdownItems.Select(x =>
+		public static List<SelectListItem> From(IEnumerable<DropdownItem> dropdownItems) => dropdownItems
+			.Where(x => x != null)
+			.Select(x => 
 			new SelectListItem
 			{
-				Text = x.DropdownText(),
+				Text = x.DropdownText() ?? "",
 				Value = x.DropdownValue()
 			})
 			.ToList();

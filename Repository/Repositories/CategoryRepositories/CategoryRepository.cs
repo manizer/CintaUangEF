@@ -25,7 +25,7 @@ namespace Repository.Repositories.CategoryRepositories
 
     public class CategoryRepository : BaseRepository<CategoryDTO>, ICategoryRepository
 	{ 
-        public CategoryRepository(CintaUangDbContext dbContext, DbContextOptions<CintaUangDbContext> options) : base(dbContext)
+        public CategoryRepository(CintaUangDbContext dbContext) : base(dbContext)
 		{
 		}
 

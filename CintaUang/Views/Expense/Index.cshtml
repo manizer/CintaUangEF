@@ -11,4 +11,10 @@
             @await Component.InvokeAsync("InsertUpdateExpense")
         </div>
     </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <h2>Expense List</h2>
+            @await Component.InvokeAsync("ExpenseDataTable")
+        </div>
+    </div>
 </div>

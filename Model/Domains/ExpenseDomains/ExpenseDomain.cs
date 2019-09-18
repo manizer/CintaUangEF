@@ -1,4 +1,6 @@
-﻿using Model.Lib.DropdownLibs;
+﻿using Model.Domain.DataTable.Base;
+using Model.Lib.DropdownLibs;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +16,7 @@ namespace Model.Domains.ExpenseDomains
 			public string Name { get; set; }
 
 			public bool DropdownItemEnabled() => true;
-			public string DropdownText() => Name.ToString();
+			public string DropdownText() => Name?.ToString();
 			public string DropdownValue() => Id.ToString();
 			public Lazy<List<SubCategory>> SubCategories { get; set; }
 
@@ -50,6 +52,20 @@ namespace Model.Domains.ExpenseDomains
 			public int SubcategoryId { get; set; }
 			public string Name { get; set; }
 			public int Amount { get; set; }
+		}
+
+		public class ExpenseDataTableRow : AjaxDataTableRow
+		{
+			[JsonProperty("expenseId")]
+			public int ExpenseId { get; set; }
+			[JsonProperty("expenseName")]
+			public string ExpenseName { get; set; }
+			[JsonProperty("amount")]
+			public int Amount { get; set; }
+			[JsonProperty("subCategoryName")]
+			public string SubCategoryName { get; set; }
+			[JsonProperty("categoryName")]
+			public string CategoryName { get; set; }
 		}
 	}
 }

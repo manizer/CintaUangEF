@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Model.DTO.DB;
 using Model.DTO.DB.CategoryDB;
 using Model.DTO.DB.DataTable;
+using Model.DTO.DB.ExpenseDB;
 using Model.DTO.DB.SubCategoryDB;
 using Model.DTO.DB.UserDB;
 
@@ -33,9 +34,11 @@ namespace Repository.Context
 		public DbSet<CategoryDTO> Categories { get; set; }
 		public DbSet<SubCategoryDTO> SubCategories { get; set; }
 		public DbSet<UserDTO> Users { get; set; }
+		public DbSet<ExpenseDTO> Expenses { get; set; }
 
 		// DataTable
 		public DbSet<CategoryDataTableRowDTO> CategoryDataTableRowDbSet { get; set; }
+		public DbSet<ExpenseDataTableRowDTO> ExpenseDataTableRows { get; set; }
 
 		public override int SaveChanges()
 		{

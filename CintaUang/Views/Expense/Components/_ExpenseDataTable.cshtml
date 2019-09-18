@@ -1,0 +1,38 @@
+﻿@{
+    Layout = "_LayoutViewComponent";
+}
+<datatable id="expense-datatable">
+    <thead>
+        <tr>
+            <th>Expense ID</th>
+            <th>Expense Name</th>
+            <th>SubCategory Name</th>
+            <th>Category Name</th>
+            <th>Amount</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</datatable>
+
+<script type="text/javascript">
+    var table =
+        $("#expense-datatable").DataTable({
+            "processing": true,
+            "serverSide": true,
+            "stateSave": false,
+            "autoWidth": true,
+            "pagingType": "first_last_numbers",
+            "ajax": {
+                "url": "/Expense/ExpenseDataTable",
+                "type": "GET",
+                "datatype": "json"
+            },
+            "columns": [
+                { "data": "expenseId", "orderable": false, "className": "expenseId" },
+                { "data": "expenseName", "orderable": false, "className": "expenseName" },
+                { "data": "subCategoryName", "orderable": false, "className": "subCategoryName" },
+                { "data": "categoryName", "orderable": false, "className": "categoryName" },
+                { "data": "amount", "orderable": false, "className": "amount" }
+            ]
+        });
+</script>
