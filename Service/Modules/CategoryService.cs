@@ -42,12 +42,7 @@ namespace Service.Modules
 		public IEnumerable<Category> GetCategories()
 		{
 			IEnumerable<CategoryDTO> categoryDtos = categoryRepository.GetCategories();
-            List<Category> categories = new List<Category>();
-            foreach (var categoryDto in categoryDtos)
-            {
-                categories.Add(new Category().CopyPropertiesFrom(categoryDto));
-            }
-            return categories;
+            return categoryDtos.Select(x => new Category().CopyPropertiesFrom(x));
 		}
 
 		public Category GetCategory(int CategoryId)
@@ -64,11 +59,7 @@ namespace Service.Modules
 				Draw = categoryAjaxDataTableDTO.Draw,
 				RecordsFiltered = categoryAjaxDataTableDTO.RecordsFiltered,
 				RecordsTotal = categoryAjaxDataTableDTO.RecordsTotal,
-				Data = categoryAjaxDataTableDTO.Data.Select(x => new CategoryDataTableRow
-				{
-					Id = x.Id,
-					Name = x.Name
-				}).ToList()
+				Data = categoryAjaxDataTableDTO.Data.Select(x => new CategoryDataTableRow().CopyPropertiesFrom(x)).ToList()
 			};
 			return categoryAjaxDataTable;
 		}
@@ -87,24 +78,14 @@ namespace Service.Modules
 
 		public ExecuteResult Update(UpdateCategory updateCategory)
 		{
-			ExecuteResultDTO executeResultDTO = categoryRepository.UpdateCategory(new CategoryDTO
-			{
-				Id = updateCategory.Id,
-				Name = updateCategory.Name
-			});
-			return new ExecuteResult
-			{
-				InstanceId = executeResultDTO.InstanceId
-			};
+            ExecuteResultDTO executeResultDTO = categoryRepository.UpdateCategory(new CategoryDTO().CopyPropertiesFrom(updateCategory));
+            return new ExecuteResult().CopyPropertiesFrom(executeResultDTO);
 		}
 
 		public ExecuteResult Delete(int Id)
 		{
 			ExecuteResultDTO executeResultDTO = categoryRepository.DeleteCategory(Id);
-			return new ExecuteResult
-			{
-				InstanceId = executeResultDTO.InstanceId
-			};
+            return new ExecuteResult().CopyPropertiesFrom(executeResultDTO);
 		}
 	}
 }
