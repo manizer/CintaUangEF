@@ -26,10 +26,7 @@ namespace Repository.Repositories.ExpenseRepositories
 						   join c in Context.Categories on b.CategoryId equals c.Id
 						   where a.Name.Contains(Search) &&
 						   b.Name.Contains(Search) &&
-						   c.Name.Contains(Search) &&
-						   b.AuditedActivity != 'D' &&
-						   c.AuditedActivity != 'D' &&
-						   a.AuditedActivity != 'D'
+						   c.Name.Contains(Search)
 						   orderby a.Id
 						   select new
 						   {
@@ -40,10 +37,10 @@ namespace Repository.Repositories.ExpenseRepositories
 							   CategoryName = c.Name
 						   });
 			var TotalEntries = entries.Count();
-			var TotalPage = Math.Ceiling(TotalEntries * 1f / Take * 1f);
+			var TotalPage = Convert.ToInt32(TotalEntries / Take);
 			var Paginated = entries
-							.Skip((Page - 1) * Take)
 							.Take(Take)
+							.Skip((Page - 1) * Take)
 							.ToList();
 
 			return Paginated.Select(x => new ExpenseDataTableRowDTO
@@ -53,9 +50,9 @@ namespace Repository.Repositories.ExpenseRepositories
 				SubCategoryName = x.SubCategoryName,
 				ExpenseId = x.ExpenseId,
 				ExpenseName = x.ExpenseName,
-				TotalPage = TotalEntries,
+				TotalPage = TotalPage,
 				TotalRecord = TotalEntries,
-				CurrentRecord = Paginated.Count
+				CurrentRecord = 0
 			});
 		}
 	}

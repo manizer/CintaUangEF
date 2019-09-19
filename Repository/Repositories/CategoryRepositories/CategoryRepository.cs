@@ -29,7 +29,7 @@ namespace Repository.Repositories.CategoryRepositories
 		{
 		}
 
-		public IEnumerable<CategoryDTO> GetCategories() => Context.Categories.Where(x => !x.AuditedActivity.Equals(DBEnum.AUDITEDACTIVITY_DELETE));
+		public IEnumerable<CategoryDTO> GetCategories() => Context.Categories.Where(x => x.AuditedActivity != DBEnum.AUDITEDACTIVITY_DELETE);
 		public CategoryDTO GetCategory(int id) => Context.Categories.Find(id);
         public ExecuteResultDTO InsertCategory(CategoryDTO categoryDTO)
         {
@@ -50,7 +50,7 @@ namespace Repository.Repositories.CategoryRepositories
 				InstanceId = categoryDTO.Id
 			};
         }
-
+		
 		public ExecuteResultDTO UpdateCategory(CategoryDTO categoryDTO)
 		{
 			Context.Categories.Update(categoryDTO);

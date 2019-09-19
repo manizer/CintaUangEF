@@ -5,9 +5,22 @@ using Service.Modules;
 using Model.Domain;
 using Model.Domain.DB;
 using Model.Domain.DB.UserDB;
+using System;
+using Helper.Object;
 
 namespace CintaUang.Controllers
 {
+    public class TestDTO
+    {
+        public DateTime domnull { get; set; } = new DateTime();
+        public DateTime? DTONull { get; set; } = null;
+    }
+
+    public class TestDomain
+    {
+        public DateTime? DomNull { get; set; }
+        public DateTime DTONull { get; set; }
+    }
     public class AuthController : BaseController
     {
         private readonly IUserService userService;
@@ -19,6 +32,10 @@ namespace CintaUang.Controllers
 
         public IActionResult Index()
         {
+            TestDTO testDTO = new TestDTO();
+            TestDomain testDomain = new TestDomain();
+
+            testDomain.CopyPropertiesFrom(testDTO);
             return View();
         }
 

@@ -29,5 +29,13 @@ namespace Model.Domains.CategoryDomains
 		{
 			public int Id { get; set; }
 		}
+
+		public class CategoryDataTableRow : AjaxDataTableRow
+		{
+			[JsonProperty("id")]
+			public int Id { get; set; }
+			[JsonProperty("name")]
+			public string Name { get; set; }
+		}
 	}
 }

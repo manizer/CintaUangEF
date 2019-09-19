@@ -46,7 +46,8 @@ namespace CintaUang.Controllers
 					ExecuteResult insertResult = subCategoryService.InsertSubCategory(new InsertSubCategory
 					{
 						CategoryId = indexViewModel.CategoryId,
-						SubCategoryName = indexViewModel.SubCategoryName
+						SubCategoryName = indexViewModel.SubCategoryName,
+						AuditedUserId = HttpContext.Session.GetLoginUserId() ?? 0
 					});
 					AddNotification(ViewNotification.Make("Insert Success", "Success"));
 				}
@@ -57,7 +58,8 @@ namespace CintaUang.Controllers
 					{
 						SubCategoryId = indexViewModel.SubCategoryId,
 						CategoryId = indexViewModel.CategoryId,
-						SubCategoryName = indexViewModel.SubCategoryName
+						SubCategoryName = indexViewModel.SubCategoryName,
+						AuditedUserId = HttpContext.Session.GetLoginUserId() ?? 0
 					});
 					AddNotification(ViewNotification.Make("Update Success", ViewNotification.SUCCESS));
 				}

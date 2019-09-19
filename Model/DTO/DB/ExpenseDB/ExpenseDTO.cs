@@ -7,7 +7,7 @@ using System.Text;
 namespace Model.DTO.DB.ExpenseDB
 {
 	[Table("trexpense")]
-	public class ExpenseDTO : BaseModel
+	public class ExpenseDTO
 	{
 		[Key]
 		[Column("id")]

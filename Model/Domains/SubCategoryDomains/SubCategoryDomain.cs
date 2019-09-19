@@ -31,6 +31,7 @@ namespace Model.Domains.SubCategoryDomains
 		{
 			public int CategoryId { get; set; }
 			public string SubCategoryName { get; set; }
+			public int AuditedUserId { get; set; }
 		}
 
 		public class UpdateSubCategory
@@ -38,6 +39,7 @@ namespace Model.Domains.SubCategoryDomains
 			public int SubCategoryId { get; set; }
 			public int CategoryId { get; set; }
 			public string SubCategoryName { get; set; }
+			public int AuditedUserId { get; set; }
 		}
 	}
 }
