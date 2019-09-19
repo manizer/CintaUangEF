@@ -34,21 +34,15 @@ namespace Service.Modules
 		{
 			this.subCategoryRepository = subCategoryRepository;
 			this.categoryRepository = categoryRepository;
+			this.dbContextFactory = dbContextFactory;
 		}
 
 		public IEnumerable<Category> GetCategories() => categoryRepository.GetCategories()
-			.Select(x => new Category
-			{
-				Id = x.Id,
-				Name = x.Name
-			});
+			.Select(x => new Category().CopyPropertiesFrom(x));
 
 		public IEnumerable<SubCategory> GetSubcategoriesByCategoryID(int CategoryID) => subCategoryRepository.GetSubCategoriesByCategoryID(CategoryID)
-			.Select(x => new SubCategory
+			.Select(x => new SubCategory()
 			{
-				Id = x.Id,
-				Name = x.Name,
-				CategoryId = x.CategoryId,
 				Category = new Lazy<Category>(() =>
 				{
 					using (var context = dbContextFactory.GetContext())
@@ -58,7 +52,7 @@ namespace Service.Modules
 						return category;
 					}
 				})
-			});
+			}.CopyPropertiesFrom(x));
 
 		public ExecuteResult InsertSubCategory(InsertSubCategory insertSubCategory)
 		{
@@ -71,10 +65,7 @@ namespace Service.Modules
 		{
 			SubCategoryDTO subCategoryDTO = new SubCategoryDTO().CopyPropertiesFrom(updateSubCategory);
 			ExecuteResultDTO executeResultDTO = subCategoryRepository.UpdateSubCategory(subCategoryDTO);
-			return new ExecuteResult
-			{
-				InstanceId = executeResultDTO.InstanceId
-			};
+			return new ExecuteResult().CopyPropertiesFrom(executeResultDTO);
 		}
 	}
 }
