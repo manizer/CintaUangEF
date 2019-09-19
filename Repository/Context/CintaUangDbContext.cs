@@ -37,7 +37,6 @@ namespace Repository.Context
 		public DbSet<ExpenseDTO> Expenses { get; set; }
 
 		// DataTable
-		public DbSet<CategoryDataTableRowDTO> CategoryDataTableRowDbSet { get; set; }
 		public DbSet<ExpenseDataTableRowDTO> ExpenseDataTableRows { get; set; }
 
 		public override int SaveChanges()

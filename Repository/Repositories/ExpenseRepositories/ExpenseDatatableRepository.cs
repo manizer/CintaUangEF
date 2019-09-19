@@ -40,10 +40,10 @@ namespace Repository.Repositories.ExpenseRepositories
 							   CategoryName = c.Name
 						   });
 			var TotalEntries = entries.Count();
-			var TotalPage = Convert.ToInt32(TotalEntries / Take);
+			var TotalPage = Math.Ceiling(TotalEntries * 1f / Take * 1f);
 			var Paginated = entries
-							.Take(Take)
 							.Skip((Page - 1) * Take)
+							.Take(Take)
 							.ToList();
 
 			return Paginated.Select(x => new ExpenseDataTableRowDTO
@@ -53,9 +53,9 @@ namespace Repository.Repositories.ExpenseRepositories
 				SubCategoryName = x.SubCategoryName,
 				ExpenseId = x.ExpenseId,
 				ExpenseName = x.ExpenseName,
-				TotalPage = TotalPage,
+				TotalPage = TotalEntries,
 				TotalRecord = TotalEntries,
-				CurrentRecord = 0
+				CurrentRecord = Paginated.Count
 			});
 		}
 	}

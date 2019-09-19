@@ -62,31 +62,15 @@ namespace Service.Modules
 
 		public ExecuteResult InsertSubCategory(InsertSubCategory insertSubCategory)
 		{
-			InsertSubCategoryDTO insertSubCategoryDTO = new InsertSubCategoryDTO
-			{
-				CategoryId = insertSubCategory.CategoryId,
-				AuditedUserId = insertSubCategory.AuditedUserId,
-				SubCategoryName = insertSubCategory.SubCategoryName
-			};
-
-			ExecuteResultDTO executeResultDTO = subCategoryRepository.InsertSubCategory(insertSubCategoryDTO);
-			return new ExecuteResult
-			{
-				InstanceId = executeResultDTO.InstanceId
-			};
+			SubCategoryDTO subCategoryDTO = new SubCategoryDTO().CopyPropertiesFrom(insertSubCategory);
+			ExecuteResultDTO executeResultDTO = subCategoryRepository.InsertSubCategory(subCategoryDTO);
+			return new ExecuteResult().CopyPropertiesFrom(executeResultDTO);
 		}
 
 		public ExecuteResult UpdateSubCategory(UpdateSubCategory updateSubCategory)
 		{
-			UpdateSubCategoryDTO updateSubCategoryDTO = new UpdateSubCategoryDTO
-			{
-				CategoryId = updateSubCategory.CategoryId,
-				AuditedUserId = updateSubCategory.AuditedUserId,
-				SubCategoryName = updateSubCategory.SubCategoryName,
-				SubCategoryId = updateSubCategory.SubCategoryId
-			};
-
-			ExecuteResultDTO executeResultDTO = subCategoryRepository.UpdateSubCategory(updateSubCategoryDTO);
+			SubCategoryDTO subCategoryDTO = new SubCategoryDTO().CopyPropertiesFrom(updateSubCategory);
+			ExecuteResultDTO executeResultDTO = subCategoryRepository.UpdateSubCategory(subCategoryDTO);
 			return new ExecuteResult
 			{
 				InstanceId = executeResultDTO.InstanceId

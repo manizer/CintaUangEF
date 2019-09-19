@@ -77,7 +77,7 @@ namespace Service.Modules
 			};
 		}
 
-		public ExecuteResult Delete(int Id)
+		public ExecuteResult Delete(int Id) 
 		{
 			ExecuteResultDTO executeResultDTO = categoryRepository.DeleteCategory(Id);
 			return new ExecuteResult

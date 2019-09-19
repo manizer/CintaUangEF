@@ -17,8 +17,8 @@ namespace Repository.Repositories.SubCategoryRepositories
 	public interface ISubCategoryRepository : IRepository<SubCategoryDTO>
 	{
 		IEnumerable<SubCategoryDTO> GetSubCategoriesByCategoryID(int CategoryID);
-		ExecuteResultDTO InsertSubCategory(InsertSubCategoryDTO insertSubCategoryDTO);
-		ExecuteResultDTO UpdateSubCategory(UpdateSubCategoryDTO updateSubCategoryDTO);
+		ExecuteResultDTO InsertSubCategory(SubCategoryDTO subCategoryDTO);
+		ExecuteResultDTO UpdateSubCategory(SubCategoryDTO subCategoryDTO);
 	}
 
 	public class SubCategoryRepository : BaseRepository<SubCategoryDTO>, ISubCategoryRepository
@@ -31,14 +31,8 @@ namespace Repository.Repositories.SubCategoryRepositories
 			x.CategoryId == CategoryID &&
 			!x.AuditedActivity.Equals(DBEnum.AUDITEDACTIVITY_DELETE));
 
-		public ExecuteResultDTO InsertSubCategory(InsertSubCategoryDTO insertSubCategoryDTO)
+		public ExecuteResultDTO InsertSubCategory(SubCategoryDTO subCategoryDTO)
 		{
-			SubCategoryDTO subCategoryDTO = new SubCategoryDTO
-			{
-				CategoryId = insertSubCategoryDTO.CategoryId,
-				Name = insertSubCategoryDTO.SubCategoryName
-			};
-
 			Context.SubCategories.Add(subCategoryDTO);
 			Context.SaveChanges();
 			return new ExecuteResultDTO
@@ -47,16 +41,9 @@ namespace Repository.Repositories.SubCategoryRepositories
 			};
 		}
 
-		public ExecuteResultDTO UpdateSubCategory(UpdateSubCategoryDTO updateSubCategoryDTO)
+		public ExecuteResultDTO UpdateSubCategory(SubCategoryDTO subCategoryDTO)
 		{
-			SubCategoryDTO subCategoryDTO = new SubCategoryDTO
-			{
-				Id = updateSubCategoryDTO.SubCategoryId,
-				CategoryId = updateSubCategoryDTO.CategoryId,
-				Name = updateSubCategoryDTO.SubCategoryName
-			};
-
-			Context.SubCategories.Add(subCategoryDTO);
+			Context.SubCategories.Update(subCategoryDTO);
 			Context.SaveChanges();
 			return new ExecuteResultDTO
 			{
