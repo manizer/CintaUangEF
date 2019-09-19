@@ -4,7 +4,10 @@ using Model.Domain.DB.DataTable;
 using Model.DTO.DB;
 using Model.DTO.DB.CategoryDB;
 using Model.DTO.DB.DataTable;
+using Model.DTO.DB.SubCategoryDB;
+using Repository.Base.Helper;
 using Repository.Repositories.CategoryRepositories;
+using Repository.Repositories.SubCategoryRepositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,18 +24,23 @@ namespace Service.Modules
 		ExecuteResult Insert(InsertCategory insertCategory);
 		ExecuteResult Update(UpdateCategory insertCategory);
 		ExecuteResult Delete(int Id);
+
+		void UnitOfWorkSample();
 	}
 
 	public class CategoryService : ICategoryService
 	{
 		private readonly ICategoryRepository categoryRepository;
-		private readonly IServiceProvider serviceProvider;
+		private readonly ISubCategoryRepository subCategoryRepository;
+		private readonly UnitOfWork unitOfWork;
 
 		public CategoryService(ICategoryRepository categoryRepository,
-			IServiceProvider serviceProvider)
+			ISubCategoryRepository subCategoryRepository,
+			UnitOfWork unitOfWork)
 		{
 			this.categoryRepository = categoryRepository;
-			this.serviceProvider = serviceProvider;
+			this.subCategoryRepository = subCategoryRepository;
+			this.unitOfWork = unitOfWork;
 		}
 
 		public IEnumerable<Category> GetCategories()
@@ -84,6 +92,33 @@ namespace Service.Modules
 			{
 				InstanceId = executeResultDTO.InstanceId
 			};
+		}
+
+		public void UnitOfWorkSample()
+		{
+			try
+			{
+				unitOfWork.Run((r, ctx) =>
+				{
+					r.ConvertContextOfRepository(subCategoryRepository).ToUse(ctx);
+					r.ConvertContextOfRepository(categoryRepository).ToUse(ctx);
+
+					categoryRepository.InsertCategory(new CategoryDTO
+					{
+						Name = "FAIL-CAT"
+					});
+					
+					subCategoryRepository.InsertSubCategory(new SubCategoryDTO
+					{
+						Name = "FAIL-SUB",
+						CategoryId = 1
+					});
+				});
+			}
+			catch(Exception e)
+			{
+
+			}
 		}
 	}
 }

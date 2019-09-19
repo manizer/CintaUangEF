@@ -23,37 +23,86 @@ namespace Repository.Base.Helper
         /// </summary>
         /// 
         /// <param name="repoWork">Asynchronous lambda to do the repository transactions</param>
-        public async Task Run(RepoWork repoWork)
+        public async Task RunAsync(RepoWorkAsync repoWork)
         {
             RepositoryRegistry rRegistry = new RepositoryRegistry();
             RepositoryRegistryRegistrar rRegistrar = new RepositoryRegistryRegistrar(rRegistry);
             CintaUangDbContext localContext = null;
-            try
-            {
-                using (var scope = serviceProvider.CreateScope())
-                {
-                    localContext = scope.ServiceProvider.GetService<CintaUangDbContext>();
-                    localContext.Database.BeginTransaction();
+			try
+			{
+				using (var scope = serviceProvider.CreateScope())
+				{
+					localContext = scope.ServiceProvider.GetService<CintaUangDbContext>();
+					using (var trans = localContext.Database.BeginTransaction())
+					{
+						try
+						{
+							await repoWork(rRegistrar, localContext);
+							trans.Commit();
+						}
+						catch (Exception e)
+						{
+							trans.Rollback();
+							throw e;
+						}
+					}
 
-                    await repoWork(rRegistrar, localContext);
-                    localContext.Database.CommitTransaction();
-                }
-            }
-            catch (Exception e)
-            {
-                localContext.Database.RollbackTransaction();
-                throw e;
-            }
-            finally
-            {
-                /**
+				}
+			}
+			catch (Exception e)
+			{
+				throw e;
+			}
+			finally
+			{
+				/**
                  * Convert All DbContexts of all repositories registered in registry
                  */
-                rRegistry.GetRepositories().ForEach(unitOfWorkRepository => unitOfWorkRepository.RevertToPreviousDbContext());
-            }
-        }
+				rRegistry.GetRepositories().ForEach(unitOfWorkRepository => unitOfWorkRepository.RevertToPreviousDbContext());
+			}
+		}
 
-		public delegate Task RepoWork(RepositoryRegistryRegistrar rRegistrar, CintaUangDbContext context);
+		public void Run(RepoWork repoWork)
+		{
+			RepositoryRegistry rRegistry = new RepositoryRegistry();
+			RepositoryRegistryRegistrar rRegistrar = new RepositoryRegistryRegistrar(rRegistry);
+			CintaUangDbContext localContext = null;
+			try
+			{
+				using (var scope = serviceProvider.CreateScope())
+				{
+					localContext = scope.ServiceProvider.GetService<CintaUangDbContext>();
+					using (var trans = localContext.Database.BeginTransaction())
+					{
+						try
+						{
+							repoWork(rRegistrar, localContext);
+							trans.Commit();
+						}
+						catch(Exception e)
+						{
+							trans.Rollback();
+							throw e;
+						}
+					}
+						
+				}
+			}
+			catch (Exception e)
+			{
+				throw e;
+			}
+			finally
+			{
+				/**
+                 * Convert All DbContexts of all repositories registered in registry
+                 */
+				rRegistry.GetRepositories().ForEach(unitOfWorkRepository => unitOfWorkRepository.RevertToPreviousDbContext());
+			}
+		}
+
+		public delegate Task RepoWorkAsync(RepositoryRegistryRegistrar rRegistrar, CintaUangDbContext context);
+		public delegate void RepoWork(RepositoryRegistryRegistrar rRegistrar, CintaUangDbContext context);
     }
 
     /// <summary>
