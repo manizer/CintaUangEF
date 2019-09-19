@@ -4,7 +4,10 @@ using Model.Domain.DB.DataTable;
 using Model.DTO.DB;
 using Model.DTO.DB.CategoryDB;
 using Model.DTO.DB.DataTable;
+using Model.DTO.DB.SubCategoryDB;
+using Repository.Base.Helper;
 using Repository.Repositories.CategoryRepositories;
+using Repository.Repositories.SubCategoryRepositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,25 +21,26 @@ namespace Service.Modules
 	{
 		IEnumerable<Category> GetCategories();
 		Category GetCategory(int CategoryId);
-		Task<AjaxDataTable<CategoryDataTableRow>> GetCategoryDataTable(int Page, int Take, string Search, int OrderColIdx, string OrderDirection);
 		ExecuteResult Insert(InsertCategory insertCategory);
 		ExecuteResult Update(UpdateCategory insertCategory);
 		ExecuteResult Delete(int Id);
+
+		void UnitOfWorkSample();
 	}
 
 	public class CategoryService : ICategoryService
 	{
 		private readonly ICategoryRepository categoryRepository;
-		private readonly ICategoryDataTableRepository categoryDataTableRepository;
-		private readonly IServiceProvider serviceProvider;
+		private readonly ISubCategoryRepository subCategoryRepository;
+		private readonly UnitOfWork unitOfWork;
 
 		public CategoryService(ICategoryRepository categoryRepository,
-			ICategoryDataTableRepository categoryDataTableRepository,
-			IServiceProvider serviceProvider)
+			ISubCategoryRepository subCategoryRepository,
+			UnitOfWork unitOfWork)
 		{
 			this.categoryRepository = categoryRepository;
-			this.categoryDataTableRepository = categoryDataTableRepository;
-			this.serviceProvider = serviceProvider;
+			this.subCategoryRepository = subCategoryRepository;
+			this.unitOfWork = unitOfWork;
 		}
 
 		public IEnumerable<Category> GetCategories()
@@ -49,19 +53,6 @@ namespace Service.Modules
 		{
 			CategoryDTO categoryDTO = categoryRepository.GetCategory(CategoryId);
             return new Category().CopyPropertiesFrom(categoryDTO);
-		}
-
-		public async Task<AjaxDataTable<CategoryDataTableRow>> GetCategoryDataTable(int Page, int Take, string Search, int OrderColIdx, string OrderDirection)
-		{
-			AjaxDataTableDTO<CategoryDataTableRowDTO> categoryAjaxDataTableDTO = await categoryDataTableRepository.GetCategoryDataTable(Page, Take, Search, OrderColIdx, OrderDirection);
-			AjaxDataTable<CategoryDataTableRow> categoryAjaxDataTable = new AjaxDataTable<CategoryDataTableRow>
-			{
-				Draw = categoryAjaxDataTableDTO.Draw,
-				RecordsFiltered = categoryAjaxDataTableDTO.RecordsFiltered,
-				RecordsTotal = categoryAjaxDataTableDTO.RecordsTotal,
-				Data = categoryAjaxDataTableDTO.Data.Select(x => new CategoryDataTableRow().CopyPropertiesFrom(x)).ToList()
-			};
-			return categoryAjaxDataTable;
 		}
 
 		public ExecuteResult Insert(InsertCategory insertCategory)
@@ -82,10 +73,37 @@ namespace Service.Modules
             return new ExecuteResult().CopyPropertiesFrom(executeResultDTO);
 		}
 
-		public ExecuteResult Delete(int Id)
+		public ExecuteResult Delete(int Id) 
 		{
 			ExecuteResultDTO executeResultDTO = categoryRepository.DeleteCategory(Id);
             return new ExecuteResult().CopyPropertiesFrom(executeResultDTO);
+		}
+
+		public void UnitOfWorkSample()
+		{
+			try
+			{
+				unitOfWork.Run((r, ctx) =>
+				{
+					r.ConvertContextOfRepository(subCategoryRepository).ToUse(ctx);
+					r.ConvertContextOfRepository(categoryRepository).ToUse(ctx);
+
+					categoryRepository.InsertCategory(new CategoryDTO
+					{
+						Name = "FAIL-CAT"
+					});
+					
+					subCategoryRepository.InsertSubCategory(new SubCategoryDTO
+					{
+						Name = "FAIL-SUB",
+						CategoryId = 1
+					});
+				});
+			}
+			catch(Exception e)
+			{
+
+			}
 		}
 	}
 }
